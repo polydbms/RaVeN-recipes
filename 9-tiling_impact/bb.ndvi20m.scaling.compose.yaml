@@ -1,0 +1,65 @@
+experiments:
+  data:
+    raster: /data/s2a_bb_20m
+    vector: /data/ALKIS_bb_all_Nutzung
+  workload:
+    get:
+      vector:
+        - oid
+      raster:
+        - sval:
+            aggregations:
+              - avg
+              - max
+              - min
+              - count
+              - sum
+    join:
+      table1: vector
+      table2: raster
+      condition: intersect(raster, vector)
+    group:
+      vector:
+        - oid
+    order:
+      vector:
+        - oid
+    condition:
+      vector:
+        - nutzart = 'Landwirtschaft'
+
+
+  parameters:
+    align_crs_at_stage:
+      - preprocess
+    raster_clip:
+      #- true
+      - false
+    vector_filter_at_stage:
+      - preprocess
+    vectorize_type:
+      - polygons
+    vectorize_format:
+      - shp
+    align_to_crs:
+      - raster
+    raster_tile_size:
+      - 10x10
+      - 20x20
+      - 50x50
+      - 70x70
+      - 100x100
+      - 200x200
+      - 500x500
+      - 700x700
+      - 1000x1000
+      - 2000x2000
+      - 3000x3000
+      - 5000x5000
+
+
+  timeout: 1500
+  warm_starts: 3
+
+  systems:
+    - name: postgis

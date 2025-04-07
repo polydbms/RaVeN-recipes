@@ -1,0 +1,52 @@
+experiments:
+  data:
+    raster: /data/wind_powerdensity_10m
+    vector: /data/coastline_2020
+  workload:
+    get:
+      vector:
+        - OBJECTID
+      raster:
+        - sval:
+            aggregations:
+              - count
+              - sum
+              - min
+              - max
+              - avg
+    join:
+      table1: vector
+      table2: raster
+      condition: intersect(raster, vector)
+    group:
+      vector:
+        - OBJECTID
+    order:
+      vector:
+        - OBJECTID
+
+  parameters:
+    raster_tile_size:
+      - auto
+    align_crs_at_stage:
+      - preprocess
+    raster_clip:
+      - false
+    vector_filter_at_stage:
+      - execution
+    vectorize_type:
+      - polygons
+    vectorize_format:
+      - shp
+    align_to_crs:
+      - raster
+      
+
+
+  timeout: 1000
+  warm_starts: 3
+
+  systems:
+    - name: beast
+    - name: postgis
+    - name: rasdaman
