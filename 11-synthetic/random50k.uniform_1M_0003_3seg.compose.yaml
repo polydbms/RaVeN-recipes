@@ -1,0 +1,52 @@
+experiments:
+  data:
+    raster: /data/synthetic/random_50k
+    vector: /data/synthetic/uniform_1M_0003_3seg
+  workload:
+    get:
+      vector:
+        - rowid
+      raster:
+        - sval:
+            aggregations:
+              #- avg
+              - max
+              - min
+              - count
+              #- sum
+    join:
+      table1: vector
+      table2: raster
+      condition: intersect(raster, vector)
+    group:
+      vector:
+        - rowid
+    order:
+      vector:
+        - rowid
+
+
+  parameters:
+    raster_tile_size:
+      - auto
+    align_crs_at_stage:
+      - preprocess
+    raster_clip:
+      - false
+    vector_filter_at_stage:
+      - execution
+    vectorize_type:
+      - polygons
+    vectorize_format:
+      - shp
+    align_to_crs:
+      - raster
+
+
+  timeout: 5000
+  warm_starts: 3
+
+  systems:
+    - name: beast
+    - name: postgis
+#    - name: rasdaman
